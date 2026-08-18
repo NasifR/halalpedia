@@ -1,4 +1,4 @@
-import { restaurants } from "@/data/restaurants";
+import { getRestaurants, getRestaurantById } from "@/lib/getRestaurants";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,13 +8,14 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const restaurants = await getRestaurants();
   return restaurants.map((r) => ({ id: r.id }));
 }
 
 export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
-  const restaurant = restaurants.find((r) => r.id === id);
+  const restaurant = await getRestaurantById(id);
   if (!restaurant) return { title: "Not Found" };
   return {
     title: `${restaurant.name} – HalalNYC`,
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function RestaurantDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const restaurant = restaurants.find((r) => r.id === id);
+  const restaurant = await getRestaurantById(id);
   if (!restaurant) notFound();
 
   const { name, image, address, cuisine, priceRange, zabihaStatus, description, borough, phone, hours } = restaurant;
