@@ -1,4 +1,4 @@
-import { restaurants } from "@/data/restaurants";
+import { getRestaurants } from "@/lib/getRestaurants";
 import RestaurantList from "@/components/RestaurantList";
 import type { Metadata } from "next";
 
@@ -7,7 +7,8 @@ export const metadata: Metadata = {
   description: "Browse all halal restaurants in New York City, filterable by borough, zabiha status, cuisine, and price.",
 };
 
-export default function RestaurantsPage() {
+export default async function RestaurantsPage() {
+  const restaurants = await getRestaurants();
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
       <div>

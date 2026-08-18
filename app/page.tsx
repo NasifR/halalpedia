@@ -1,10 +1,11 @@
-import { restaurants } from "@/data/restaurants";
+import { getRestaurants } from "@/lib/getRestaurants";
 import RestaurantList from "@/components/RestaurantList";
 import FeaturedCard from "@/components/FeaturedCard";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const restaurants = await getRestaurants();
   const zabihaCount = restaurants.filter((r) => r.zabihaStatus === "yes").length;
   const featured = restaurants.filter((r) => r.featured);
 
