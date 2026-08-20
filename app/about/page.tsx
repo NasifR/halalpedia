@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "About Us – HalalNYC",
-  description: "Learn about HalalNYC — our mission to make halal food easy to find and verify across New York City.",
+  title: "About Us – Halalpedia",
+  description: "Learn about Halalpedia — our mission to make halal food easy to find and verify across New York City.",
 };
 
 export default function AboutPage() {
@@ -12,7 +12,7 @@ export default function AboutPage() {
       {/* Header */}
       <div className="space-y-3">
         <div className="text-4xl">🌙</div>
-        <h1 className="text-3xl font-bold text-stone-900">About HalalNYC</h1>
+        <h1 className="text-3xl font-bold text-stone-900">About Halalpedia</h1>
         <p className="text-stone-500 text-lg leading-relaxed">
           A community-built guide to halal eating in the greatest city in the world.
         </p>
@@ -25,7 +25,10 @@ export default function AboutPage() {
           Finding truly halal food in New York City shouldn't be a guessing game. Platforms like Google Maps and Yelp display a "halal" label — but they don't distinguish between restaurants that are simply halal-certified and those that serve zabiha-slaughtered meat. For many Muslims, that distinction matters deeply.
         </p>
         <p className="text-stone-600 leading-relaxed">
-          HalalNYC exists to fill that gap. We verify zabiha status separately, surface that information clearly on every listing, and build a platform that the Muslim community of New York can actually trust.
+          Halalpedia exists to fill that gap. We verify zabiha status separately, surface that information clearly on every listing, and build a platform that the Muslim community of New York can actually trust.
+        </p>
+        <p className="text-stone-600 leading-relaxed">
+          Our platform does more than just list restaurants—it lets users save their favorite spots for quick and easy access anytime. (Feature under construction)
         </p>
       </section>
 
@@ -45,7 +48,7 @@ export default function AboutPage() {
             {
               icon: "📞",
               title: "Direct contact",
-              desc: "We call restaurants and ask owners directly about their meat sourcing and slaughter method.",
+              desc: "We contact restaurants and ask them directly about their meat sourcing and slaughter method.",
             },
             {
               icon: "🤝",
@@ -71,9 +74,9 @@ export default function AboutPage() {
 
       {/* Built by */}
       <section className="space-y-3">
-        <h2 className="text-xl font-semibold text-stone-800">Built By the Community</h2>
+        <h2 className="text-xl font-semibold text-stone-800">Built For the Community</h2>
         <p className="text-stone-600 leading-relaxed">
-          HalalNYC is an independent project built by Muslims who live and eat in New York City. We are not sponsored by restaurants, and we do not accept payment for listings or status upgrades. Our only goal is to make halal food in NYC easier to find and trust.
+          At Halalpedia, our main goal is to make halal food in NYC easier to find and trust. We hope that you will find our platform useful, and it will help you discover your new favorite halal restaurant!
         </p>
       </section>
 
@@ -82,7 +85,7 @@ export default function AboutPage() {
         <p className="font-medium text-stone-800">Know a halal restaurant we're missing?</p>
         <p className="text-stone-500 text-sm">We're always adding new listings. Reach out to suggest a restaurant or update zabiha information.</p>
         <a
-          href="mailto:hello@halalnyc.com"
+          href="mailto:nasifjuhayer@gmail.com"
           className="inline-block bg-emerald-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-emerald-800 transition-colors"
         >
           Contact Us
