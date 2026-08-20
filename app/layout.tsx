@@ -8,9 +8,16 @@ import Image from "next/image";
 const geist = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Halalpedia – Find Halal Restaurants in New York City",
-  description:
-    "Discover verified halal restaurants across all five boroughs of New York City. Filter by zabiha status, cuisine, price, and more.",
+  title: "Halalpedia – Halal Restaurants in New York City",
+  description: "Find verified halal and zabiha restaurants across all five NYC boroughs. Filter by cuisine, price, borough and zabiha status.",
+  keywords: ["halal restaurants NYC", "zabiha halal New York", "halal food Queens", "halal food Brooklyn", "halal restaurants Manhattan"],
+  openGraph: {
+    title: "Halalpedia – Halal Restaurants in NYC",
+    description: "Find verified halal and zabiha restaurants across all five NYC boroughs.",
+    url: "https://halalpedia.nyc",
+    siteName: "Halalpedia",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
