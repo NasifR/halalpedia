@@ -24,19 +24,6 @@ export default function ProfilePage() {
       <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 space-y-5">
         {/* Avatar */}
         <div className="flex items-center gap-4">
-          {user.photoURL ? (
-            <Image
-              src={user.photoURL}
-              alt={user.displayName ?? "User"}
-              width={64}
-              height={64}
-              className="rounded-full"
-            />
-          ) : (
-            <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center text-2xl font-bold text-emerald-700">
-              {user.displayName?.charAt(0).toUpperCase() ?? "?"}
-            </div>
-          )}
 
           <div>
             <p className="font-semibold text-stone-900 text-lg">{user.displayName}</p>

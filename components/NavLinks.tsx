@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/lib/AuthContext";
@@ -15,16 +15,25 @@ const links = [
 
 export default function NavLinks() {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const router = useRouter();
+  const { user, isAdmin } = useAuth();
   const [showAuth, setShowAuth] = useState(false);
+
+  function handleAccountClick() {
+    if (user && !isAdmin) {
+      // Regular users go straight to profile page
+      router.push("/profile");
+    } else {
+      // Logged-out users and admins open the modal
+      setShowAuth(true);
+    }
+  }
 
   return (
     <>
       <nav className="grid grid-cols-3 items-center h-14 max-w-5xl mx-auto px-4">
-        {/* Left — login button */}
-        <div className="flex items-center">
-          
-        </div>
+        {/* Left — empty */}
+        <div className="flex items-center" />
 
         {/* Center — nav links */}
         <div className="flex justify-center gap-1">
@@ -47,26 +56,22 @@ export default function NavLinks() {
           })}
         </div>
 
-        {/* Right — logo */}
-        <div className="flex justify-end">
+        {/* Right — account button + logo */}
+        <div className="flex items-center justify-end gap-3">
           <button
-            onClick={() => setShowAuth(true)}
+            onClick={handleAccountClick}
             className="flex items-center gap-2 rounded-full bg-emerald-700 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-emerald-800 hover:shadow-md"
           >
             {user ? (
-              <>
-                <span className="hidden sm:inline">{user.displayName?.split(" ")[0]}</span>
-              </>
+              <span className="hidden sm:inline">{user.displayName?.split(" ")[0]}</span>
             ) : (
-              <>
-                <span>Login</span>
-              </>
+              <span>Login</span>
             )}
           </button>
+
         </div>
       </nav>
 
-      {/* Auth modal */}
       {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
     </>
   );

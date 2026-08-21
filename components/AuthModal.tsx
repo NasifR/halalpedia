@@ -3,10 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import {
   createUserWithEmailAndPassword,
+  reload,
+  sendEmailVerification,
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import { auth, signInWithGoogle, signOutUser } from "@/lib/auth";
 import { useAuth } from "@/lib/AuthContext";
@@ -15,11 +18,11 @@ interface AuthModalProps {
   onClose: () => void;
 }
 
-type View = "login" | "signup";
+type View = "login" | "signup" | "verify";
 
 export default function AuthModal({ onClose }: AuthModalProps) {
   const { user, isAdmin } = useAuth();
-
+  const router = useRouter();
   const overlayRef = useRef<HTMLDivElement>(null);
 
   const [view, setView] = useState<View>("login");
@@ -115,7 +118,9 @@ export default function AuthModal({ onClose }: AuthModalProps) {
         displayName: name,
       });
 
-      onClose();
+      await sendEmailVerification(result.user);
+
+      setView("verify");
     } catch (err: any) {
       setError(parseError(err.code));
     } finally {
@@ -161,6 +166,34 @@ export default function AuthModal({ onClose }: AuthModalProps) {
     }
   }
 
+  // Check whether the user has verified their email
+  async function handleVerifyCheck() {
+    setLoading(true);
+    setError("");
+
+    try {
+      if (!auth.currentUser) {
+        setError("Something went wrong. Please try again.");
+        return;
+      }
+
+      // Refresh the user object from Firebase
+      await reload(auth.currentUser);
+
+      if (auth.currentUser.emailVerified) {
+        onClose();
+      } else {
+        setError(
+          "Email not verified yet. Please check your inbox and click the link."
+        );
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div
       ref={overlayRef}
@@ -171,7 +204,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
         }
       }}
     >
-      <div className="relative mx-4 w-full max-w-sm space-y-5 rounded-2xl bg-white p-8 shadow-xl">
+      <div className="relative w-full max-w-sm space-y-5 rounded-2xl bg-white p-8 shadow-xl">
         {/* Close button */}
         <button
           type="button"
@@ -182,10 +215,9 @@ export default function AuthModal({ onClose }: AuthModalProps) {
           ✕
         </button>
 
-        {user ? (
-          /* Logged-in view */
+        {/* Logged-in admin view */}
+        {user && isAdmin ? (
           <div className="space-y-5 text-center">
-
             <div>
               <p className="font-semibold text-stone-900">
                 {user.displayName}
@@ -193,22 +225,32 @@ export default function AuthModal({ onClose }: AuthModalProps) {
 
               <p className="text-sm text-stone-500">{user.email}</p>
 
-              {isAdmin && (
-                <span className="mt-2 inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-                  Admin
-                </span>
-              )}
+              <span className="mt-2 inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                Admin
+              </span>
             </div>
 
-            {isAdmin && (
-              <a
-                href="/admin"
-                className="block w-full rounded-xl bg-emerald-700 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-emerald-800"
-              >
-                Go to Admin Panel
-              </a>
-            )}
+            {/* Admin Panel */}
+            <a
+              href="/admin"
+              className="block w-full rounded-xl bg-emerald-700 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-emerald-800"
+            >
+              Go to Admin Panel
+            </a>
 
+            {/* Profile */}
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                router.push("/profile");
+              }}
+              className="w-full rounded-xl border border-stone-200 py-2.5 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-50"
+            >
+              Go to Profile
+            </button>
+
+            {/* Sign out */}
             <button
               type="button"
               onClick={async () => {
@@ -220,8 +262,48 @@ export default function AuthModal({ onClose }: AuthModalProps) {
               Sign out
             </button>
           </div>
+        ) : view === "verify" ? (
+          /* Email verification screen */
+          <div className="space-y-5 text-center">
+            <div className="text-5xl">📧</div>
+
+            <div className="space-y-1">
+              <h2 className="text-xl font-bold text-stone-900">
+                Check your inbox
+              </h2>
+
+              <p className="text-sm text-stone-500">
+                We sent a verification link to{" "}
+                <strong>{auth.currentUser?.email}</strong>. Click it, then come
+                back and press Proceed.
+              </p>
+            </div>
+
+            {error && (
+              <p className="text-xs text-red-500">
+                {error}
+              </p>
+            )}
+
+            <button
+              type="button"
+              onClick={handleVerifyCheck}
+              disabled={loading}
+              className="w-full rounded-xl bg-emerald-700 py-2.5 font-semibold text-white transition-colors hover:bg-emerald-800 disabled:opacity-50"
+            >
+              {loading ? "Checking..." : "Proceed"}
+            </button>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full rounded-xl border border-stone-200 py-2.5 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-50"
+            >
+              Close
+            </button>
+          </div>
         ) : (
-          /* Login / signup view */
+          /* Login / Signup forms */
           <div className="space-y-5">
             {/* Header */}
             <div className="space-y-1 text-center">
@@ -248,7 +330,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
               </p>
             </div>
 
-            {/* Google button */}
+            {/* Google */}
             <button
               type="button"
               onClick={handleGoogle}
@@ -288,7 +370,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
               <div className="h-px flex-1 bg-stone-200" />
             </div>
 
-            {/* Name field */}
+            {/* Name - signup only */}
             {view === "signup" && (
               <div className="space-y-1">
                 <label
@@ -356,14 +438,14 @@ export default function AuthModal({ onClose }: AuthModalProps) {
               />
             </div>
 
-            {/* Error message */}
+            {/* Error */}
             {error && (
               <p className="text-center text-xs text-red-500">
                 {error}
               </p>
             )}
 
-            {/* Submit button */}
+            {/* Submit */}
             <button
               type="button"
               onClick={view === "login" ? handleLogin : handleSignup}
@@ -377,7 +459,7 @@ export default function AuthModal({ onClose }: AuthModalProps) {
                   : "Create Account"}
             </button>
 
-            {/* Toggle view */}
+            {/* Toggle login/signup */}
             <p className="text-center text-sm text-stone-500">
               {view === "login" ? (
                 <>
@@ -409,4 +491,3 @@ export default function AuthModal({ onClose }: AuthModalProps) {
     </div>
   );
 }
-
