@@ -22,7 +22,7 @@ export default function ProfilePage() {
       <h1 className="text-2xl font-bold text-stone-900">My Profile</h1>
 
       <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 space-y-5">
-        {/* Avatar */}
+        {/* User info */}
         <div className="flex items-center gap-4">
 
           <div>

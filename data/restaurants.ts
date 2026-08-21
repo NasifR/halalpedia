@@ -20,6 +20,7 @@ export interface Restaurant {
   phone?: string;
   hours?: string;
   featured?: boolean; // shown in the homepage featured section
+  menu?: string;
 }
 
 export const restaurants: Restaurant[] = [
