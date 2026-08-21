@@ -4,19 +4,28 @@ import "./globals.css";
 import Link from "next/link";
 import NavLinks from "@/components/NavLinks";
 import Image from "next/image";
+import { AuthProvider } from "@/lib/AuthContext";
 
 const geist = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Halalpedia – Find Halal Restaurants in New York City",
-  description:
-    "Discover verified halal restaurants across all five boroughs of New York City. Filter by zabiha status, cuisine, price, and more.",
+  title: "Halalpedia – Halal Restaurants in New York City",
+  description: "Find verified halal and zabiha restaurants across all five NYC boroughs. Filter by cuisine, price, borough and zabiha status.",
+  keywords: ["halal restaurants NYC", "zabiha halal New York", "halal food Queens", "halal food Brooklyn", "halal restaurants Manhattan"],
+  openGraph: {
+    title: "Halalpedia – Halal Restaurants in NYC",
+    description: "Find verified halal and zabiha restaurants across all five NYC boroughs.",
+    url: "https://halalpedia.nyc",
+    siteName: "Halalpedia",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={`${geist.className} bg-stone-50 text-stone-900 min-h-screen`}>
+        <AuthProvider>
         {/* Header */}
         <header className="sticky top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-stone-200">
   <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
@@ -46,12 +55,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <footer className="mt-16 border-t border-stone-100 bg-white">
           <div className="max-w-5xl mx-auto px-4 py-8 text-center text-sm text-stone-400">
-            <p>© {new Date().getFullYear()} HalalNYC · Built for the Muslim community of New York</p>
+            <p>© {new Date().getFullYear()} Halalpedia · Built for the Muslim community of New York</p>
             <p className="mt-1">
               Zabiha status is community-reported. Always verify with the restaurant directly.
             </p>
           </div>
         </footer>
+        </AuthProvider>
       </body>
     </html>
   );

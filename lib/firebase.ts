@@ -11,5 +11,5 @@ const firebaseConfig = {
 };
 
 // Prevent re-initializing the app on every hot reload in dev
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+export const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 export const db = getFirestore(app);
